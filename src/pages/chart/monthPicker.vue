@@ -16,10 +16,10 @@
         :class="{
           active: padMonth(m.label) === selectedMonth && currentYear === selectedYear
         }"
-        @click="handleMonth(m.label)"
+        @click="m.value !== 0 && handleMonth(m.label)"
       >
         {{ m.label }}
-        <view class="month-text">￥{{ m.value }}</view>
+        <view class="month-text" v-if="m.value !== 0">￥{{ m.value }}</view>
       </view>
     </view>
   </view>
@@ -100,13 +100,13 @@ const handleYear = (year: number) => {
 // 选择月份
 const handleMonth = (m: string) => {
   // 如果是当前年份，不能选择大于当前月份的月份
-  if (currentYear.value === year && Number(padMonth(m)) > month) {
-    uni.showToast({
-      title: `现在是${month}月份，不能选择未来月份`,
-      icon: 'none'
-    })
-    return
-  }
+  // if (currentYear.value === year && Number(padMonth(m)) > month) {
+  //   uni.showToast({
+  //     title: `现在是${month}月份，不能选择未来月份`,
+  //     icon: 'none'
+  //   })
+  //   return
+  // }
 
   selectedYear.value = currentYear.value
   selectedMonth.value = padMonth(m)
