@@ -2,8 +2,8 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2025-12-30 14:51:08
- * @FilePath: \wanWanApp\src\pages\chart\index.vue
+ * @LastEditTime: 2026-05-08 08:11:10
+ * @FilePath: \wanWanUA\src\pages\chart\index.vue
  * @Description:
  *
  * Copyright (c) 2025 by wongtaisin1024@gmail.com, All Rights Reserved.
@@ -22,22 +22,26 @@
 
     <Week
       v-if="current === 0"
-      @click="(val: {start: string, end: string})=>{
-      params.startDate = val.start
-      params.endDate = val.end
-    }"
+      @click="
+        (val: { start: string; end: string }) => {
+          params.startDate = val.start
+          params.endDate = val.end
+        }
+      "
     />
 
     <Calendar
       v-if="current === 1"
       ref="calendarRef"
       v-model="params"
-      @month-switch="(val: string) => {
-        // val: yyyy-MM 格式
-        const { firstDay, lastDay } = _utils.getCurrentMonthRange(val)
-        params.startDate = firstDay
-        params.endDate = lastDay
-      }"
+      @month-switch="
+        (val: string) => {
+          // val: yyyy-MM 格式
+          const { firstDay, lastDay } = _utils.getCurrentMonthRange(val)
+          params.startDate = firstDay
+          params.endDate = lastDay
+        }
+      "
       @change="
         (val: string) => {
           // val: yyyy-MM-dd 格式
@@ -64,7 +68,7 @@
         }
       "
       @change="
-        (val:string ) => {
+        (val: string) => {
           // val: yyyy-MM 格式
           const { lastDay } = _utils.getCurrentMonthRange(val)
           const op = {
@@ -77,16 +81,17 @@
       "
     />
 
-    <uni-section title="支出类型" type="line" />
     <List
       ref="listRef"
       :model-value="params"
-      @update:model-value="(val: {startDate:string, endDate:string, expensesName:string[]}) => {
-        const { startDate, endDate } = val
-        params.startDate = startDate
-        params.endDate = endDate
-        handleOpens(val)
-      }"
+      @update:model-value="
+        (val: { startDate: string; endDate: string; expensesName: string[] }) => {
+          const { startDate, endDate } = val
+          params.startDate = startDate
+          params.endDate = endDate
+          handleOpens(val)
+        }
+      "
     />
 
     <Spend ref="spendRef" />

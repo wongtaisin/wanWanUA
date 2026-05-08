@@ -2,13 +2,17 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2025-12-30 16:29:39
- * @FilePath: \wanWanApp\src\pages\chart\list.vue
+ * @LastEditTime: 2026-05-08 08:14:13
+ * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
  * Copyright (c) 2025 by wongtaisin1024@gmail.com, All Rights Reserved.
 -->
 <template>
+  <uni-section title="支出类型" type="line">
+    <template v-slot:right>支出：{{ totals }}</template>
+  </uni-section>
+
   <uni-list v-for="[item, value] in Object.entries(tableData)">
     <uni-list-item
       :title="classify[item].label"
