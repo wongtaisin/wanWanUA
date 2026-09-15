@@ -5,7 +5,7 @@
       <CommonForms
         ref="commonFormRef"
         label-align="right"
-        label-width="20%"
+        label-width="22%"
         :rules="rules"
         :columns="formColumns"
         v-model="params"
