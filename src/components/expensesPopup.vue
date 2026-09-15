@@ -11,12 +11,21 @@
         v-model="params"
         @submit="onSubmit"
       >
+        <!-- 暂时使用 -->
+        <uni-forms-item label="支出类型" name="expensesName" required>
+          <uni-data-select
+            placeholder="请选择支出类型"
+            v-model="params.expensesName"
+            :localdata="expenseTypes"
+            @change="(val: string) => handleChange(expenseTypes, val, 'expensesText')"
+          />
+        </uni-forms-item>
         <uni-forms-item label="支付类型" name="paymentId" required>
           <uni-data-select
             placeholder="请选择支付类型"
             v-model="params.paymentId"
-            :localdata="range"
-            @change="(val: number) => handleChange(range, val, 'paymentName')"
+            :localdata="paymentRange"
+            @change="(val: number) => handleChange(paymentRange, val, 'paymentName')"
           />
         </uni-forms-item>
 
@@ -58,9 +67,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useShop } from '@/store/common';
-import { onShow } from '@dcloudio/uni-app';
-import { computed, ref } from 'vue';
+import { paymentAll } from '@/api/payment'
+import { useShop } from '@/store/common'
+import { onShow } from '@dcloudio/uni-app'
+import { computed, ref } from 'vue'
 
 interface Props {
   title?: string
@@ -72,6 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface FormData {
   expensesName: string
+  expensesText: string
   money: string
   paymentId: number
   paymentName: string
@@ -114,7 +125,8 @@ const onSubmit = async (values: any) => {
  * @param {number} val // 下拉选择的值
  * @param {string} name
  */
-const handleChange = (list: any[], val: number, name: string) => {
+const handleChange = (list: any[], val: number | string, name: string) => {
+  console.log(`下拉选择: ${name} = ${val}`)
   const found = list.find((item: any) => item.value === val)
   params.value[name] = found?.text ?? ''
 }
@@ -132,14 +144,24 @@ const handleShopClear = () => {
   }
 }
 
-const range = [
-  { value: 1, text: '现金' },
-  { value: 2, text: '微信' },
-  { value: 3, text: '支付宝' },
-  { value: 4, text: '信用卡' },
-  { value: 5, text: '储蓄卡' },
-  { value: 6, text: '抖音' }
+const expenseTypes = [
+  { text: '吃', value: 'eat' },
+  { text: '喝', value: 'drink' },
+  { text: '玩', value: 'play' },
+  { text: '乐', value: 'glad' },
+  { text: '过路费', value: 'tolls' },
+  { text: '车油', value: 'oil' },
+  { text: '停车费', value: 'parking' },
+  { text: '交通费', value: 'traffic' },
+  { text: '超市', value: 'supermarket' },
+  { text: '网购', value: 'online_shopping' },
+  { text: '话费', value: 'phone_bill' },
+  { text: '红包', value: 'red_packet' },
+  { text: 'vip', value: 'vip' },
+  { text: '其他', value: 'other' }
 ]
+
+const paymentRange = ref([])
 
 const rules = {
   money: { rules: [{ required: true, errorMessage: '金额不能为空' }] },
@@ -164,22 +186,30 @@ const maxDate = computed(() => {
 })
 
 const formColumns = ref([
-  {
-    prop: 'expensesName',
-    label: '支出类型',
-    placeholder: '请输入expensesName',
-    required: true,
-    readonly: true,
-    disabled: true
-  },
+  // {
+  //   prop: 'expensesName',
+  //   label: '支出类型',
+  //   placeholder: '请输入expensesName',
+  //   required: true,
+  //   readonly: true,
+  //   disabled: true
+  // },
   { prop: 'money', label: '金额', placeholder: '请输入金额', required: true, type: 'number' }
   // { prop: 'shopName', label: '店铺', placeholder: '请输入店铺' }
 ])
+
+const init = async () => {
+  const data = await paymentAll()
+  paymentRange.value = data.map((item: any) => ({ value: item.id, text: item.payment_name }))
+  console.log('获取支付类型数据:', data)
+}
 
 onShow(() => {
   params.value.shopId = userShop.data?.id
   params.value.shopName = userShop.data?.name
 })
+
+onMounted(init)
 
 defineExpose({
   open: () => {
