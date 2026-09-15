@@ -55,6 +55,7 @@
 
         <uni-forms-item label="创建时间" name="createDate" required>
           <uni-datetime-picker
+            :disabled="props.title !== '新增'"
             type="datetime"
             return-type="string"
             v-model="params.createDate"
