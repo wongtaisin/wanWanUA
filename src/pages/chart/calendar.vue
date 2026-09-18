@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-15 11:29:03
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-05-07 17:02:05
+ * @LastEditTime: 2026-09-18 18:57:05
  * @FilePath: \wanWanUA\src\pages\chart\calendar.vue
  * @Description:
  *
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesList } from '@/api/expenses'
+import { expensesDetailCheckDatePrice } from '@/api/expensesDetail'
 import type { FormData, Info, SelectedItem } from '@/pages/chart/types'
 import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
@@ -70,13 +70,13 @@ const maxDate = computed(() => {
 })
 
 const init = async () => {
-  const res = await expensesList({ ...params.value, userId: userInfo.userId })
-  info.value.selected = res.sum.map((item: SelectedItem) => ({
-    date: item.date,
-    info: `￥${item.info}`,
+  const res = await expensesDetailCheckDatePrice({ ...params.value, userId: userInfo.userId })
+  info.value.selected = Object.entries(res.dayMap ?? {}).map(([key, value]: [string, any]) => ({
+    date: key,
+    info: `￥${value.total}`,
     data: {
-      custom: item.info,
-      name: item.date
+      custom: String(value.total),
+      name: key
     }
   }))
 }
