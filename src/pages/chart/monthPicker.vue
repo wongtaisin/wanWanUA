@@ -26,19 +26,18 @@
 </template>
 
 <script lang="ts" setup>
-import { checkDatePrice } from '@/api/expensesDetail'
-import { useInfoStore } from '@/store/user'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 interface Props {
   modelValue?: string // 格式：YYYY-MM
+  data?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: ''
+  modelValue: '',
+  data: {}
 })
 
-const userInfo = useInfoStore().user
 const emits = defineEmits(['update:modelValue', 'change', 'yearSwitch'])
 
 // 当前年月
@@ -116,11 +115,8 @@ const handleMonth = (m: string) => {
 }
 
 const init = async () => {
-  const res = await checkDatePrice({
-    userId: userInfo.userId,
-    startDate: `${selectedYear.value}-01-01`,
-    endDate: `${selectedYear.value}-12-31`
-  })
+  const res = props.data
+  console.log('2222222', res)
 
   monthList.value.forEach((item: any) => {
     const key = `${selectedYear.value}-${padMonth(item.label)}`
@@ -128,9 +124,15 @@ const init = async () => {
   })
 }
 
-onMounted(() => {
-  init()
-})
+watch(
+  () => {
+    props.data
+  },
+  () => {
+    init()
+  },
+  { deep: true, immediate: true }
+)
 </script>
 
 <style lang="scss" scoped>

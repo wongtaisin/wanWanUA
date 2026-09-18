@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-05-08 08:11:10
+ * @LastEditTime: 2026-09-18 20:09:20
  * @FilePath: \wanWanUA\src\pages\chart\index.vue
  * @Description:
  *
@@ -26,6 +26,7 @@
         (val: { start: string; end: string }) => {
           params.startDate = val.start
           params.endDate = val.end
+          init()
         }
       "
     />
@@ -33,6 +34,7 @@
     <Calendar
       v-if="current === 1"
       ref="calendarRef"
+      :data="data"
       v-model="params"
       @month-switch="
         (val: string) => {
@@ -59,6 +61,7 @@
     <MonthPicker
       v-if="current === 2"
       ref="monthPickerRef"
+      :data="data"
       @year-switch="
         (val: string) => {
           // val: yyyy 格式
@@ -83,6 +86,7 @@
 
     <List
       ref="listRef"
+      :data="data"
       :model-value="params"
       @update:model-value="
         (val: { startDate: string; endDate: string; expensesName: string[] }) => {
@@ -99,6 +103,7 @@
 </template>
 
 <script lang="ts" setup>
+import { expensesDetailCheckDatePrice } from '@/api/expensesDetail'
 import Calendar from '@/pages/chart/calendar.vue'
 import List from '@/pages/chart/list.vue'
 import MonthPicker from '@/pages/chart/monthPicker.vue'
@@ -106,6 +111,7 @@ import Spend from '@/pages/chart/spend.vue'
 import type { FormData } from '@/pages/chart/types'
 import { expensesNames, getWeekRange } from '@/pages/chart/utils'
 import Week from '@/pages/chart/week.vue'
+import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
 import { onMounted, reactive, ref } from 'vue'
 
@@ -119,6 +125,8 @@ interface SpendForm {
   expensesName: ListForm['expensesName']
 }
 
+const userInfo = useInfoStore().user
+const data = ref<any>({})
 const params = ref<FormData>({ startDate: '', endDate: '' })
 const items = reactive(['周', '月', '年'])
 const current = ref(0)
@@ -151,6 +159,12 @@ const onClickItem = (e: { currentIndex: number }) => {
       params.value.endDate = `${year}-12-31`
       break
   }
+  init()
+}
+
+const init = async () => {
+  const res = await expensesDetailCheckDatePrice({ ...params.value, userId: userInfo.userId })
+  data.value = res
 }
 
 onMounted(() => {

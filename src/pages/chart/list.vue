@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-05-08 08:14:13
+ * @LastEditTime: 2026-09-18 21:06:42
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
@@ -60,11 +60,10 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesCheck } from '@/api/expenses'
 import type { FormData } from '@/pages/chart/types'
-import { expensesNames } from '@/pages/chart/utils'
 import { computed, ref, watch } from 'vue'
 
+const data = defineModel<any>('data', { default: {} })
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const tableData = ref<any>({})
@@ -93,24 +92,18 @@ const handleOpens = (item: string) => {
   emits('change', { ...params.value, expensesName: [item] })
 }
 
-const initCheck = async () => {
-  const { sum, total } = await expensesCheck({
-    // userId: 1, // TODO: 从登录状态获取
-    expensesName: expensesNames,
-    startDate: params.value.startDate,
-    endDate: params.value.endDate
-  })
-
+const init = async () => {
+  const { sum, total } = data.value
   tableData.value = { ...sum }
   totals.value = total
 }
 
 watch(
-  () => params.value,
   () => {
-    if (params.value.startDate && params.value.endDate) {
-      initCheck()
-    }
+    data.value
+  },
+  () => {
+    init()
   },
   { deep: true, immediate: true }
 )

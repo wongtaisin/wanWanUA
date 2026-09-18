@@ -22,13 +22,18 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesDetailCheckDatePrice } from '@/api/expensesDetail'
 import type { FormData, Info, SelectedItem } from '@/pages/chart/types'
-import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-const userInfo = useInfoStore().user
+interface Props {
+  data?: any
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  data: {}
+})
+
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const emits = defineEmits<{
@@ -70,7 +75,7 @@ const maxDate = computed(() => {
 })
 
 const init = async () => {
-  const res = await expensesDetailCheckDatePrice({ ...params.value, userId: userInfo.userId })
+  const res = props.data
   info.value.selected = Object.entries(res.dayMap ?? {}).map(([key, value]: [string, any]) => ({
     date: key,
     info: `￥${value.total}`,
@@ -81,9 +86,15 @@ const init = async () => {
   }))
 }
 
-onMounted(() => {
-  init()
-})
+watch(
+  () => {
+    props.data
+  },
+  () => {
+    init()
+  },
+  { deep: true, immediate: true }
+)
 </script>
 
 <style lang="scss" scoped></style>
