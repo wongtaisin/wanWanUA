@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 20:09:20
+ * @LastEditTime: 2026-09-18 21:19:34
  * @FilePath: \wanWanUA\src\pages\chart\index.vue
  * @Description:
  *
@@ -42,6 +42,7 @@
           const { firstDay, lastDay } = _utils.getCurrentMonthRange(val)
           params.startDate = firstDay
           params.endDate = lastDay
+          init()
         }
       "
       @change="
@@ -68,6 +69,7 @@
           params.startDate = `${val}-01-01`
           params.endDate = `${val}-12-31`
           // TODO 这是为了更新列表的时间范围，list 会获取参数变化而更新
+          init()
         }
       "
       @change="
@@ -113,7 +115,7 @@ import { expensesNames, getWeekRange } from '@/pages/chart/utils'
 import Week from '@/pages/chart/week.vue'
 import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 interface ListForm {
   expensesName: string[]
@@ -166,10 +168,6 @@ const init = async () => {
   const res = await expensesDetailCheckDatePrice({ ...params.value, userId: userInfo.userId })
   data.value = res
 }
-
-onMounted(() => {
-  onClickItem({ currentIndex: 0 })
-})
 </script>
 
 <style lang="scss" scoped>
