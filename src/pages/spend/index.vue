@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-05-07 14:12:01
+ * @LastEditTime: 2026-09-18 17:57:16
  * @FilePath: \wanWanUA\src\pages\spend\index.vue
  * @Description:
  *
@@ -105,12 +105,19 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesTotal } from '@/api/expenses'
-import { expensesDetailDelete, expensesDetailEdit, expensesDetailList } from '@/api/expensesDetail'
+import {
+  expensesDetailCheckDatePrice,
+  expensesDetailDelete,
+  expensesDetailEdit,
+  expensesDetailList
+} from '@/api/expensesDetail'
+import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
 import { onMounted, reactive, ref } from 'vue'
 
 const { BASE_URL } = getURL()
+
+const userInfo = useInfoStore().user
 
 type SpendGroup = { date: string; list: any[]; total: number }
 
@@ -178,7 +185,12 @@ const initList = async () => {
 // 支出总金额
 const initTotal = async () => {
   const { startDate, endDate } = params.value
-  const { total }: any = await expensesTotal({ startDate, endDate })
+  const { total }: any = await expensesDetailCheckDatePrice({
+    startDate,
+    endDate,
+    userId: userInfo.userId
+  })
+  console.log(total)
   moneyTotal.value = total || 0
 }
 
