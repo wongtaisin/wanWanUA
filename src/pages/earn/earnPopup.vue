@@ -145,11 +145,11 @@ const handleShopClear = () => {
 const earnTypes = [
   { text: '工资', value: '工资' },
   { text: '奖金', value: '奖金' },
-  { text: '投资收益', value: '投资收益' },
-  { text: '兼职收入', value: '兼职收入' },
-  { text: '其他', value: '其他' },
+  { text: '投资', value: '投资' },
   { text: '新澳', value: '新澳' },
-  { text: '兼职', value: '兼职' }
+  { text: '兼职', value: '兼职' },
+  { text: '红包', value: '红包' },
+  { text: '其他', value: '其他' }
 ]
 
 const paymentRange = ref([])
