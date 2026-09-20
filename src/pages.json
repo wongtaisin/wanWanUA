@@ -9,7 +9,7 @@
   "pages": [
     //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/expenses/index", // 路径
+      "path": "pages/home/index", // 路径
       "style": {
         "navigationBarTitleText": "wanWan",
         "backgroundColor": "#000", // 背景颜色
@@ -19,6 +19,17 @@
         "onReachBottomDistance": 50 // 上拉加载距离
       }
     },
+    // {
+    //   "path": "pages/expenses/index", // 路径
+    //   "style": {
+    //     "navigationBarTitleText": "wanWan",
+    //     "backgroundColor": "#000", // 背景颜色
+    //     "navigationBarTextStyle": "black", // 导航栏文字颜色
+    //     "navigationBarBackgroundColor": "#fede2b", // 导航栏背景颜色
+    //     "enablePullDownRefresh": false, // 是否开启下拉刷新
+    //     "onReachBottomDistance": 50 // 上拉加载距离
+    //   }
+    // },
     {
       "path": "pages/spend/index",
       "style": {
@@ -94,7 +105,7 @@
     "fontSize": "12px", // 字体大小，增大字号
     "list": [
       {
-        "pagePath": "pages/expenses/index", // 文件路径
+        "pagePath": "pages/home/index", // 文件路径
         "iconPath": "static/image/icon/icon_home.png", // 未选中图标
         "selectedIconPath": "static/image/icon/icon_home_HL.png", // 选中图标
         "text": "首页" // 标题
