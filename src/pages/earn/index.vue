@@ -82,7 +82,7 @@ const onSubmit = async (values: any) => {
 
 const tableData = ref([
   { text: '新澳', icon: 'icon-food-mifan' },
-  { text: '世界杯', icon: 'icon-kekoukele2' }
+  { text: '兼职', icon: 'icon-kekoukele2' }
 ])
 </script>
 

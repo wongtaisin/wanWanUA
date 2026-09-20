@@ -149,7 +149,7 @@ const earnTypes = [
   { text: '兼职收入', value: '兼职收入' },
   { text: '其他', value: '其他' },
   { text: '新澳', value: '新澳' },
-  { text: '世界杯', value: '世界杯' }
+  { text: '兼职', value: '兼职' }
 ]
 
 const paymentRange = ref([])
