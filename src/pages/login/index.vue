@@ -47,7 +47,7 @@ const onSubmit = () => {
       const data = await userInfo.getUserInfo() // 登录成功后，获取用户信息
       userInfo.setUserInfo(data) // 登录成功后，设置用户信息
       uni.showToast({ title: '登录成功', icon: 'success' })
-      uni.switchTab({ url: '/pages/expenses/index' })
+      uni.switchTab({ url: '/pages/home/index' })
     })
     .catch((err: any) => {
       console.error('err', err)

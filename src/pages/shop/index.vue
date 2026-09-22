@@ -121,7 +121,7 @@ const loadMore = () => {
 const handleTrigger = ({ item, index }: { item: any; index: number }) => {
   switch (index) {
     case 0:
-      uni.switchTab({ url: '/pages/expenses/index' })
+      uni.switchTab({ url: '/pages/home/index' })
       break
     case 1:
       uni.navigateTo({ url: '/pages/shop/add' })
