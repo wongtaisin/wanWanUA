@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 17:57:16
+ * @LastEditTime: 2026-09-23 23:44:42
  * @FilePath: \wanWanUA\src\pages\spend\index.vue
  * @Description:
  *
@@ -25,9 +25,13 @@
         <p class="money">{{ params.total }}</p>
       </uni-col>
       <uni-col :span="8">
-        <text class="text">支出</text>
-        <p class="money">{{ moneyTotal }}</p>
+        <text class="text">消费</text>
+        <p class="money">{{ (Number(moneyTotal) - Number(earnTotal)).toFixed(2) }}</p>
       </uni-col>
+      <!-- <uni-col :span="8">
+        <text class="text">详情</text>
+        <p class="money">{{ moneyTotal }} - {{ earnTotal }}</p>
+      </uni-col> -->
     </uni-row>
 
     <scroll-view
@@ -48,7 +52,7 @@
               </text>
             </uni-col>
             <uni-col :span="12" style="text-align: right">
-              <text>支出：{{ group.total }}</text>
+              <text>合计：{{ group.total.toFixed(2) }}</text>
             </uni-col>
           </uni-row>
         </view>
@@ -88,7 +92,8 @@
               </template>
               <template v-slot:footer>
                 <view class="chat-custom-right">
-                  <text>-{{ item.money }}</text>
+                  <text v-if="item.type === '1'" style="color: #dd524d">-{{ item.money }}</text>
+                  <text v-else style="color: #67c23a">+{{ item.money }}</text>
                 </view>
               </template>
             </uni-list-item>
@@ -105,11 +110,12 @@
 </template>
 
 <script lang="ts" setup>
+import { commonList } from '@/api/common'
+import { earnCheckDatePrice } from '@/api/earn'
 import {
   expensesDetailCheckDatePrice,
   expensesDetailDelete,
-  expensesDetailEdit,
-  expensesDetailList
+  expensesDetailEdit
 } from '@/api/expensesDetail'
 import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
@@ -146,6 +152,7 @@ const params = ref({
   total: 0 // 传了后台也不接受，只用作显示消费笔数
 })
 const status = ref('more') // more/loading/noMore
+const earnTotal = ref(0)
 const moneyTotal = ref(0)
 const expensesPopupRef = ref()
 const expensesParams = ref<any>({})
@@ -154,13 +161,13 @@ const editingMeta = ref<{ groupIndex: number; itemIndex: number } | null>(null)
 const triggered = ref(false) // 是否在刷新中
 
 const init = async () => {
-  await Promise.all([initList(), initTotal()])
+  await Promise.all([initList(), initTotal(), initEarnTotal()])
 }
 
 // 初始化数据
 const initList = async () => {
   status.value = 'loading'
-  const { list, total }: any = await expensesDetailList(params.value)
+  const { list, total }: any = await commonList(params.value)
   params.value.total = total
 
   // 重新设计list，需要把每一天的支出都展示出来，转成[{list:{}, date:2025-01-01, total:0}]
@@ -172,7 +179,14 @@ const initList = async () => {
         acc[date] = { date, list: [], total: 0 } // 初始化该日期的对象
       }
       acc[date].list.push(item) // 把当前项添加到该日期的列表中
-      acc[date].total += parseFloat(item.money) // 累加该日期的支出金额
+
+      const money = parseFloat(item.money) || 0
+      if (item.type === '1') {
+        acc[date].total -= money // 支出增加当日总额
+      } else if (item.type === '2') {
+        acc[date].total += money // 收入减少当日总额
+      }
+
       return acc
     }, {})
   ) as SpendGroup[]
@@ -190,8 +204,18 @@ const initTotal = async () => {
     endDate,
     userId: userInfo.userId
   })
-  console.log(total)
   moneyTotal.value = total || 0
+}
+
+const initEarnTotal = async () => {
+  const { startDate, endDate } = params.value
+
+  const { total }: any = await earnCheckDatePrice({
+    startDate,
+    endDate
+  })
+
+  earnTotal.value = total
 }
 
 const handleChange = (e: any) => {
@@ -309,6 +333,10 @@ const syncEditedRow = (updatedRow: Record<string, any>) => {
   const mergedRow = { ...originalRow, ...updatedRow }
   const oldMoney = Number(originalRow.money) || 0
   const newMoney = Number(mergedRow.money) || 0
+  const getSignedMoney = (row: Record<string, any>, money: number) =>
+    String(row.type) === '1' ? -money : String(row.type) === '2' ? money : 0
+  const oldSignedMoney = getSignedMoney(originalRow, oldMoney)
+  const newSignedMoney = getSignedMoney(mergedRow, newMoney)
   const oldDate = (originalRow.create_date || sourceGroup.date)?.slice(0, 10)
   const newDate = (mergedRow.create_date || oldDate)?.slice(0, 10)
 
@@ -325,11 +353,11 @@ const syncEditedRow = (updatedRow: Record<string, any>) => {
   // 如果只改内容不改单日期
   if (oldDate === newDate) {
     sourceGroup.list[itemIndex] = mergedRow
-    updateGroupTotal(sourceGroup, newMoney - oldMoney)
+    updateGroupTotal(sourceGroup, newSignedMoney - oldSignedMoney)
   } else {
     // 日期发生变化，需移动到新分组
     sourceGroup.list.splice(itemIndex, 1)
-    updateGroupTotal(sourceGroup, -oldMoney)
+    updateGroupTotal(sourceGroup, -oldSignedMoney)
     // 如果原组已空则删除组
     if (sourceGroup.list.length === 0) {
       tableData.value.splice(groupIndex, 1)
@@ -346,11 +374,13 @@ const syncEditedRow = (updatedRow: Record<string, any>) => {
 
     // 插入数据（插入到list头部）
     targetGroup.list.unshift(mergedRow)
-    updateGroupTotal(targetGroup, newMoney)
+    updateGroupTotal(targetGroup, newSignedMoney)
   }
 
   // 总金额同步
-  moneyTotal.value = +(Number(moneyTotal.value) - oldMoney + newMoney).toFixed(2)
+  // 使用数值兜底，避免接口返回空值或字符串时总金额变成 NaN
+  const currentTotal = Number(moneyTotal.value) || 0
+  moneyTotal.value = +(currentTotal - oldSignedMoney + newSignedMoney).toFixed(2)
   editingMeta.value = null
   // 通知响应式系统
   tableData.value = tableData.value.slice()

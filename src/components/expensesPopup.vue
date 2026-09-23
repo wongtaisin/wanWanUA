@@ -113,7 +113,6 @@ const emits = defineEmits(['submit'])
 const handleUploadSuccess = (file: any) => {
   const { url } = file.data
   params.value.image = url
-  console.log('上传成功，图片URL:', file.data, params.value.image)
 }
 
 const onSubmit = async (values: any) => {

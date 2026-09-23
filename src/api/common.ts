@@ -15,4 +15,9 @@ const areaData = async () => {
   return res
 }
 
-export { areaData }
+const commonList = async (params: any) => {
+  const res: any = await request('/common/list', 'POST', params)
+  return res
+}
+
+export { areaData, commonList }
