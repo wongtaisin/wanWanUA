@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 03:33:01
+ * @LastEditTime: 2026-09-25 04:59:48
  * @FilePath: \wanWanUA\src\pages\spend\index.vue
  * @Description:
  *
@@ -229,17 +229,47 @@ const handleClick = async (e: any, row: any, i: number) => {
     const { list } = await ledgerNameCheckType({ type: row.type })
     ledgerOptions.value = list.map((item: any) => item.name)
 
-    console.log(ledgerOptions.value)
-
     // 使用 setTimeout 延迟打开弹窗，避免事件冒泡导致立即关闭
     setTimeout(() => {
       commonPopupRef.value.open()
     }, 100)
-  } else {
-    await ledgerDelete(row.id)
-    tableData.value.splice(i, 1)
-    uni.showToast({ title: '删除成功', icon: 'success' })
+    return
   }
+
+  await ledgerDelete(row.id)
+
+  const groupIndex = tableData.value.findIndex(
+    (group: any) => group.date === (row.create_date || '').slice(0, 10)
+  )
+
+  if (groupIndex === -1) {
+    uni.showToast({ title: '删除失败', icon: 'none' })
+    return
+  }
+
+  const group = tableData.value[groupIndex]
+  const itemIndex = group.list.findIndex((item: any) => item.id === row.id)
+
+  if (itemIndex === -1) {
+    uni.showToast({ title: '删除失败', icon: 'none' })
+    return
+  }
+
+  // 根据实际数据删除，不再按当前分组外的索引去删错项
+  const deletedItem = group.list[itemIndex]
+  const deletedMoney = Number(deletedItem.money) || 0
+  const signedMoney = String(deletedItem.type) === '1' ? -deletedMoney : deletedMoney
+  group.list.splice(itemIndex, 1)
+  group.total = +(Number(group.total || 0) - signedMoney).toFixed(2)
+
+  if (group.list.length === 0) {
+    tableData.value.splice(groupIndex, 1)
+  }
+
+  params.value.total = Math.max(0, Number(params.value.total || 0) - 1)
+  moneyTotal.value = +(Number(moneyTotal.value || 0) - signedMoney).toFixed(2)
+  tableData.value = tableData.value.slice()
+  uni.showToast({ title: '删除成功', icon: 'success' })
 }
 
 const swipeChange = (e: any, row: any, index: number) => {
