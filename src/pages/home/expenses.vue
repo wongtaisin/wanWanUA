@@ -1,13 +1,3 @@
-<!--
- * @Author: wingddd wongtaisin1024@gmail.com
- * @Date: 2025-10-08 15:10:00
- * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 01:10:00
- * @FilePath: \wanWanUA\src\pages\expenses\index.vue
- * @Description:
- *
- * Copyright (c) 2025 by wongtaisin1024@gmail.com, All Rights Reserved.
--->
 <template>
   <view class="expenses-content">
     <!-- <uni-section title="请选择您的支出类型" type="line"/> -->
@@ -30,18 +20,23 @@
       </uni-grid>
     </view>
 
-    <ExpensesPopup ref="expensesPopupRef" v-model="params" @submit="onSubmit" />
+    <CommonPopup
+      ref="expensesPopupRef"
+      v-model="params"
+      :ledgerData="tableData"
+      @submit="onSubmit"
+    />
   </view>
 </template>
 
 <script lang="ts" setup>
-import ExpensesPopup from './expensesPopup.vue'
 import { request } from '@/api/request'
 import _utils from '@/utils/utils'
 import { ref } from 'vue'
 
 interface FormData {
-  expensesName: string
+  type: string
+  ledgerName: string
   money: string
   paymentId: number
   paymentName: string
@@ -51,7 +46,8 @@ interface FormData {
 
 // 表单数据初始值
 const initialFormData: FormData = {
-  expensesName: '',
+  type: '1',
+  ledgerName: '',
   money: '',
   // shopName: '',
   paymentId: 2,
@@ -62,11 +58,11 @@ const initialFormData: FormData = {
 const params = ref<FormData>({ ...initialFormData })
 const expensesPopupRef = ref()
 
-const handleClick = (item: { label: string; prop: string; icon: string }) => {
+const handleClick = (item: { label: string; icon: string }) => {
   expensesPopupRef.value.open() // 打开弹窗
   params.value = { ...initialFormData }
   params.value.createDate = _utils.formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss')
-  params.value.expensesName = item.prop
+  params.value.ledgerName = item.label
 }
 
 const onSubmit = async (values: any) => {
@@ -74,10 +70,9 @@ const onSubmit = async (values: any) => {
 
   console.log(`新增消费`, mergedRow)
 
-  await request('/expensesDetail/add', 'POST', params.value)
+  await request('/ledger/add', 'POST', params.value)
     .then((_res: any) => {
-      const tit =
-        tableData.value.find((item: any) => item.prop === values.expensesName)?.label || ''
+      const tit = tableData.value.find((item: any) => item.label === values.ledgerName)?.label || ''
       uni.showToast({
         title: `${tit}花费：￥${values.money}`,
         icon: 'success'
@@ -92,20 +87,20 @@ const onSubmit = async (values: any) => {
 }
 
 const tableData = ref([
-  { label: '吃', prop: 'eat', icon: 'icon-food-mifan' },
-  { label: '喝', prop: 'drink', icon: 'icon-kekoukele2' },
-  { label: '玩', prop: 'play', icon: 'icon-a-GamePadyouxishoubing' },
-  { label: '乐', prop: 'glad', icon: 'icon-zhoubianyule' },
-  { label: '过路费', prop: 'tolls', icon: 'icon-guolufei' },
-  { label: '车油', prop: 'oil', icon: 'icon-jiayouzhan2' },
-  { label: '停车费', prop: 'parking', icon: 'icon-tingchefeiyong' },
-  { label: '交通费', prop: 'traffic', icon: 'icon-gongjiaoche' },
-  { label: '超市', prop: 'supermarket', icon: 'icon-chaoshi2' },
-  { label: '网购', prop: 'online_shopping', icon: 'icon-wanggou' },
-  { label: '话费', prop: 'phone_bill', icon: 'icon-dianhua' },
-  { label: '红包', prop: 'red_packet', icon: 'icon-hongbao2' },
-  { label: 'vip', prop: 'vip', icon: 'icon-vip1' },
-  { label: '其他', prop: 'other', icon: 'icon-qitafeiyong' }
+  { label: '吃', icon: 'icon-food-mifan' },
+  { label: '喝', icon: 'icon-kekoukele2' },
+  { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
+  { label: '乐', icon: 'icon-zhoubianyule' },
+  { label: '过路费', icon: 'icon-guolufei' },
+  { label: '车油', icon: 'icon-jiayouzhan2' },
+  { label: '停车费', icon: 'icon-tingchefeiyong' },
+  { label: '交通费', icon: 'icon-gongjiaoche' },
+  { label: '超市', icon: 'icon-chaoshi2' },
+  { label: '网购', icon: 'icon-wanggou' },
+  { label: '话费', icon: 'icon-dianhua' },
+  { label: '红包', icon: 'icon-hongbao2' },
+  { label: 'vip', icon: 'icon-vip1' },
+  { label: '其它', icon: 'icon-qitafeiyong' }
 ])
 </script>
 

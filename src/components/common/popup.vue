@@ -12,14 +12,15 @@
         @submit="onSubmit"
       >
         <!-- 暂时使用 -->
-        <uni-forms-item label="支出类型" name="expensesName" required>
+        <uni-forms-item label="支出类型" name="ledgerName" required>
           <uni-data-select
             placeholder="请选择支出类型"
-            v-model="params.expensesName"
-            :localdata="expenseTypes"
-            @change="(val: string) => handleChange(expenseTypes, val, 'expensesText')"
+            v-model="params.ledgerName"
+            :localdata="ledgerTypes"
+            @change="(val: string) => handleChange(ledgerTypes, val, 'ledgerText')"
           />
         </uni-forms-item>
+
         <uni-forms-item label="支付类型" name="paymentId" required>
           <uni-data-select
             placeholder="请选择支付类型"
@@ -75,6 +76,7 @@ import { computed, ref } from 'vue'
 
 interface Props {
   title?: string
+  ledgerData: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -82,8 +84,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 interface FormData {
-  expensesName: string
-  expensesText: string
+  ledgerName: string
+  ledgerText: string
   money: string
   paymentId: number
   paymentName: string
@@ -106,6 +108,9 @@ const fileList = computed(() =>
         }
       ]
     : undefined
+)
+const ledgerTypes = computed(() =>
+  props.ledgerData.map((item: any) => ({ value: item.label, text: item.label }))
 )
 const emits = defineEmits(['submit'])
 
@@ -144,23 +149,6 @@ const handleShopClear = () => {
   }
 }
 
-const expenseTypes = [
-  { text: '吃', value: 'eat' },
-  { text: '喝', value: 'drink' },
-  { text: '玩', value: 'play' },
-  { text: '乐', value: 'glad' },
-  { text: '过路费', value: 'tolls' },
-  { text: '车油', value: 'oil' },
-  { text: '停车费', value: 'parking' },
-  { text: '交通费', value: 'traffic' },
-  { text: '超市', value: 'supermarket' },
-  { text: '网购', value: 'online_shopping' },
-  { text: '话费', value: 'phone_bill' },
-  { text: '红包', value: 'red_packet' },
-  { text: 'vip', value: 'vip' },
-  { text: '其他', value: 'other' }
-]
-
 const paymentRange = ref([])
 
 const rules = {
@@ -187,9 +175,9 @@ const maxDate = computed(() => {
 
 const formColumns = ref([
   // {
-  //   prop: 'expensesName',
+  //   prop: 'ledgerName',
   //   label: '支出类型',
-  //   placeholder: '请输入expensesName',
+  //   placeholder: '请输入ledgerName',
   //   required: true,
   //   readonly: true,
   //   disabled: true

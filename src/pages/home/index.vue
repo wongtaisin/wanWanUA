@@ -1,3 +1,13 @@
+<!--
+ * @Author: wingddd wongtaisin1024@gmail.com
+ * @Date: 2026-09-20 23:50:27
+ * @LastEditors: wingddd wongtaisin1024@gmail.com
+ * @LastEditTime: 2026-09-24 23:45:50
+ * @FilePath: \wanWanUA\src\pages\home\index.vue
+ * @Description:
+ *
+ * Copyright (c) 2026 by wongtaisin1024@gmail.com, All Rights Reserved.
+-->
 <template>
   <view class="home-content">
     <view class="home-segmented">
@@ -11,14 +21,14 @@
     </view>
 
     <Expenses v-if="current === 0" />
-    <Income v-if="current === 1" />
+    <Earn v-if="current === 1" />
   </view>
 </template>
 
 <script lang="ts" setup>
-import Income from '@/pages/earn/index.vue'
-import Expenses from '@/pages/expenses/index.vue'
 import { reactive, ref } from 'vue'
+import Earn from './earn.vue'
+import Expenses from './expenses.vue'
 
 const items = reactive(['消费', '收入 '])
 const current = ref(0)
