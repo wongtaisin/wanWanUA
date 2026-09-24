@@ -20,11 +20,17 @@
       </uni-grid>
     </view>
 
-    <CommonPopup ref="earnPopupRef" v-model="params" :ledgerData="tableData" @submit="onSubmit" />
+    <CommonPopup
+      ref="commonPopupRef"
+      v-model="params"
+      :ledgerData="ledgerOptions"
+      @submit="onSubmit"
+    />
   </view>
 </template>
 
 <script lang="ts" setup>
+import { ledgerNameCheckType } from '@/api/ledger'
 import { request } from '@/api/request'
 import _utils from '@/utils/utils'
 import { ref } from 'vue'
@@ -50,10 +56,10 @@ const initialFormData: FormData = {
 }
 
 const params = ref<FormData>({ ...initialFormData })
-const earnPopupRef = ref()
+const commonPopupRef = ref()
 
 const handleClick = (item: { label: string; icon: string }) => {
-  earnPopupRef.value.open() // 打开弹窗
+  commonPopupRef.value.open() // 打开弹窗
   params.value = { ...initialFormData }
   params.value.createDate = _utils.formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss')
   params.value.ledgerName = item.label
@@ -77,14 +83,22 @@ const onSubmit = async (values: any) => {
       console.error('新增失败:', err)
     })
     .finally(() => {
-      earnPopupRef.value.close()
+      commonPopupRef.value.close()
     })
 }
 
-const tableData = ref([
-  { label: '新澳', icon: 'icon-food-mifan' },
-  { label: '兼职', icon: 'icon-kekoukele2' }
-])
+const tableData: any = ref([])
+
+const ledgerOptions = ref([])
+const init = async () => {
+  const { list } = await ledgerNameCheckType({ type: '2' })
+  ledgerOptions.value = list.map((item: any) => item.name)
+  tableData.value = list.map((item: any) => ({ label: item.name, icon: item.icon }))
+}
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <style lang="scss" scoped>

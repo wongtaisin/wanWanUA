@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-24 14:08:01
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-05-07 15:01:12
+ * @LastEditTime: 2026-09-25 04:43:01
  * @FilePath: \wanWanUA\src\pages\chart\utils.ts
  * @Description: 图表工具函数
  *
@@ -32,23 +32,6 @@ export const getWeekRange = (data?: Date): { weekStart: string; weekEnd: string 
     weekEnd: fmt(weekEnd)
   }
 }
-
-export const expensesNames = [
-  'eat',
-  'drink',
-  'play',
-  'glad',
-  'tolls',
-  'oil',
-  'parking',
-  'traffic',
-  'supermarket',
-  'online_shopping',
-  'phone_bill',
-  'red_packet',
-  'vip',
-  'other'
-]
 
 /**
  * @deprecated 获取指定年份的周数

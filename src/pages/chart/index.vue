@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 21:19:34
+ * @LastEditTime: 2026-09-25 04:42:10
  * @FilePath: \wanWanUA\src\pages\chart\index.vue
  * @Description:
  *
@@ -51,7 +51,7 @@
           const op = {
             startDate: val,
             endDate: val,
-            expensesName: expensesNames
+            ledgerName: ledgerOptions
           } as any
           handleOpens(op)
         }
@@ -79,7 +79,7 @@
           const op = {
             startDate: `${val}-01`,
             endDate: `${lastDay}`,
-            expensesName: expensesNames
+            ledgerName: ledgerOptions
           }
           handleOpens(op)
         }
@@ -91,7 +91,7 @@
       :data="data"
       :model-value="params"
       @update:model-value="
-        (val: { startDate: string; endDate: string; expensesName: string[] }) => {
+        (val: { startDate: string; endDate: string; ledgerName: string[] }) => {
           const { startDate, endDate } = val
           params.startDate = startDate
           params.endDate = endDate
@@ -105,29 +105,27 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesDetailCheckDatePrice } from '@/api/expensesDetail'
+import { ledgerCheckDatePrice, ledgerNameCheckType } from '@/api/ledger'
 import Calendar from '@/pages/chart/calendar.vue'
 import List from '@/pages/chart/list.vue'
 import MonthPicker from '@/pages/chart/monthPicker.vue'
 import Spend from '@/pages/chart/spend.vue'
 import type { FormData } from '@/pages/chart/types'
-import { expensesNames, getWeekRange } from '@/pages/chart/utils'
+import { getWeekRange } from '@/pages/chart/utils'
 import Week from '@/pages/chart/week.vue'
-import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
 import { reactive, ref } from 'vue'
 
 interface ListForm {
-  expensesName: string[]
+  ledgerName: string[]
 }
 
 interface SpendForm {
   startDate: string
   endDate: string
-  expensesName: ListForm['expensesName']
+  ledgerName: ListForm['ledgerName']
 }
 
-const userInfo = useInfoStore().user
 const data = ref<any>({})
 const params = ref<FormData>({ startDate: '', endDate: '' })
 const items = reactive(['周', '月', '年'])
@@ -165,9 +163,19 @@ const onClickItem = (e: { currentIndex: number }) => {
 }
 
 const init = async () => {
-  const res = await expensesDetailCheckDatePrice({ ...params.value, userId: userInfo.userId })
+  const res = await ledgerCheckDatePrice({ ...params.value })
   data.value = res
 }
+
+const ledgerOptions = ref<string[]>([])
+const initLedgerOptions = async () => {
+  const { list } = await ledgerNameCheckType()
+  ledgerOptions.value = list.map((item: any) => item.name)
+}
+
+onMounted(() => {
+  initLedgerOptions()
+})
 </script>
 
 <style lang="scss" scoped>

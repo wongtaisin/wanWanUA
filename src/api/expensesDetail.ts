@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 12:50:32
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 17:52:55
+ * @LastEditTime: 2026-09-25 04:12:27
  * @FilePath: \wanWanUA\src\api\expensesDetail.ts
  * @Description:
  *
@@ -31,11 +31,6 @@ export const expensesDetailEdit = async (params: any) => {
 }
 
 export const checkDatePrice = async (params: any) => {
-  const res: any = await request('/expensesDetail/checkDatePrice', 'GET', params)
-  return res
-}
-
-export const expensesDetailCheckDatePrice = async (params: any) => {
   const res: any = await request('/expensesDetail/checkDatePrice', 'GET', params)
   return res
 }

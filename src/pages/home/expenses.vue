@@ -21,15 +21,16 @@
     </view>
 
     <CommonPopup
-      ref="expensesPopupRef"
+      ref="commonPopupRef"
       v-model="params"
-      :ledgerData="tableData"
+      :ledgerData="ledgerOptions"
       @submit="onSubmit"
     />
   </view>
 </template>
 
 <script lang="ts" setup>
+import { ledgerNameCheckType } from '@/api/ledger'
 import { request } from '@/api/request'
 import _utils from '@/utils/utils'
 import { ref } from 'vue'
@@ -56,10 +57,10 @@ const initialFormData: FormData = {
 }
 
 const params = ref<FormData>({ ...initialFormData })
-const expensesPopupRef = ref()
+const commonPopupRef = ref()
 
 const handleClick = (item: { label: string; icon: string }) => {
-  expensesPopupRef.value.open() // 打开弹窗
+  commonPopupRef.value.open() // 打开弹窗
   params.value = { ...initialFormData }
   params.value.createDate = _utils.formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss')
   params.value.ledgerName = item.label
@@ -82,26 +83,22 @@ const onSubmit = async (values: any) => {
       console.error('新增失败:', err)
     })
     .finally(() => {
-      expensesPopupRef.value.close()
+      commonPopupRef.value.close()
     })
 }
 
-const tableData = ref([
-  { label: '吃', icon: 'icon-food-mifan' },
-  { label: '喝', icon: 'icon-kekoukele2' },
-  { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
-  { label: '乐', icon: 'icon-zhoubianyule' },
-  { label: '过路费', icon: 'icon-guolufei' },
-  { label: '车油', icon: 'icon-jiayouzhan2' },
-  { label: '停车费', icon: 'icon-tingchefeiyong' },
-  { label: '交通费', icon: 'icon-gongjiaoche' },
-  { label: '超市', icon: 'icon-chaoshi2' },
-  { label: '网购', icon: 'icon-wanggou' },
-  { label: '话费', icon: 'icon-dianhua' },
-  { label: '红包', icon: 'icon-hongbao2' },
-  { label: 'vip', icon: 'icon-vip1' },
-  { label: '其它', icon: 'icon-qitafeiyong' }
-])
+const tableData: any = ref([{ label: '新增', icon: 'icon-qitafeiyong' }])
+
+const ledgerOptions = ref([])
+const init = async () => {
+  const { list } = await ledgerNameCheckType({ type: '1' })
+  ledgerOptions.value = list.map((item: any) => item.name)
+  tableData.value = list.map((item: any) => ({ label: item.name, icon: item.icon }))
+}
+
+onMounted(() => {
+  init()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -2,15 +2,15 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 21:06:42
+ * @LastEditTime: 2026-09-25 04:47:05
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
  * Copyright (c) 2025 by wongtaisin1024@gmail.com, All Rights Reserved.
 -->
 <template>
-  <uni-section title="支出类型" type="line">
-    <template v-slot:right>支出：{{ totals }}</template>
+  <uni-section title="类型" type="line">
+    <template v-slot:right>合计：{{ totals }}</template>
   </uni-section>
 
   <uni-list v-for="[item, value] in Object.entries(tableData)">
@@ -71,25 +71,26 @@ const totals = ref(0)
 const emits = defineEmits(['update:modelValue', 'change'])
 
 const classify: any = {
-  eat: { label: '吃', icon: 'icon-food-mifan' },
-  drink: { label: '喝', icon: 'icon-kekoukele2' },
-  play: { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
-  glad: { label: '乐', icon: 'icon-zhoubianyule' },
-  tolls: { label: '过路费', icon: 'icon-guolufei' },
-  oil: { label: '车油', icon: 'icon-jiayouzhan2' },
-  parking: { label: '停车费', icon: 'icon-tingchefeiyong' },
-  traffic: { label: '交通费', icon: 'icon-gongjiaoche' },
-  supermarket: { label: '超市', icon: 'icon-chaoshi2' },
-  online_shopping: { label: '网购', icon: 'icon-wanggou' },
-  phone_bill: { label: '话费', icon: 'icon-dianhua' },
-  red_packet: { label: '红包', icon: 'icon-hongbao2' },
+  吃: { label: '吃', icon: 'icon-food-mifan' },
+  喝: { label: '喝', icon: 'icon-kekoukele2' },
+  玩: { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
+  乐: { label: '乐', icon: 'icon-zhoubianyule' },
+  过路费: { label: '过路费', icon: 'icon-guolufei' },
+  油费: { label: '车油', icon: 'icon-jiayouzhan2' },
+  停车费: { label: '停车费', icon: 'icon-tingchefeiyong' },
+  交通费: { label: '交通费', icon: 'icon-gongjiaoche' },
+  超市: { label: '超市', icon: 'icon-chaoshi2' },
+  网购: { label: '网购', icon: 'icon-wanggou' },
+  话费: { label: '话费', icon: 'icon-dianhua' },
+  红包: { label: '红包', icon: 'icon-hongbao2' },
   vip: { label: 'vip', icon: 'icon-vip1' },
-  other: { label: '其他', icon: 'icon-qitafeiyong' }
+  其它: { label: '其它', icon: 'icon-qitafeiyong' },
+  新澳: { label: '新澳', icon: '' }
 }
 
 const handleOpens = (item: string) => {
-  emits('update:modelValue', { ...params.value, expensesName: [item] })
-  emits('change', { ...params.value, expensesName: [item] })
+  emits('update:modelValue', { ...params.value, ledgerName: [item] })
+  emits('change', { ...params.value, ledgerName: [item] })
 }
 
 const init = async () => {

@@ -110,7 +110,7 @@ const fileList = computed(() =>
     : undefined
 )
 const ledgerTypes = computed(() =>
-  props.ledgerData.map((item: any) => ({ value: item.label, text: item.label }))
+  props.ledgerData.map((item: any) => ({ value: item, text: item }))
 )
 const emits = defineEmits(['submit'])
 

@@ -2,8 +2,8 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-06 14:35:26
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2025-12-03 13:54:21
- * @FilePath: \wanWanApp\src\pages\chart\spend.vue
+ * @LastEditTime: 2026-09-25 04:34:11
+ * @FilePath: \wanWanUA\src\pages\chart\spend.vue
  * @Description:
  *
  * Copyright (c) 2025 by wongtaisin1024@gmail.com, All Rights Reserved.
@@ -17,7 +17,8 @@
             <uni-list-item :title="item.shop_name || item.remark" :note="item.create_date">
               <template v-slot:footer>
                 <view class="chat-custom-right">
-                  <text>-{{ item.money }}</text>
+                  <text v-if="item.type === '1'" style="color: #dd524d">-{{ item.money }}</text>
+                  <text v-else style="color: #67c23a">+{{ item.money }}</text>
                 </view>
               </template>
             </uni-list-item>
@@ -32,17 +33,17 @@
 </template>
 
 <script lang="ts" setup>
-import { expensesDetailList } from '@/api/expensesDetail'
+import { ledgerList } from '@/api/ledger'
 import { ref } from 'vue'
 
 interface FormData {
-  expensesName: string[]
+  ledgerName: string[]
   [key: string]: any
 }
 
 // 表单数据初始值
 const initialFormData: FormData = {
-  expensesName: [],
+  ledgerName: [],
   startDate: '',
   endDate: '',
   page: 1,
@@ -62,7 +63,7 @@ const open = (rows: any) => {
 
 const init = async () => {
   status.value = 'loading'
-  const { list, total }: any = await expensesDetailList(params.value)
+  const { list, total }: any = await ledgerList(params.value)
   tableData.value = [...tableData.value, ...list]
   const totalPage = Math.ceil(total / params.value.pageSize) // 计算总页数
   status.value = params.value.page >= totalPage ? 'noMore' : 'more'

@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-23 23:44:42
+ * @LastEditTime: 2026-09-25 03:33:01
  * @FilePath: \wanWanUA\src\pages\spend\index.vue
  * @Description:
  *
@@ -21,12 +21,12 @@
         </MothPicker>
       </uni-col>
       <uni-col :span="8">
-        <text class="text">消费笔数</text>
+        <text class="text">笔数</text>
         <p class="money">{{ params.total }}</p>
       </uni-col>
       <uni-col :span="8">
-        <text class="text">消费</text>
-        <p class="money">{{ (Number(moneyTotal) - Number(earnTotal)).toFixed(2) }}</p>
+        <text class="text">合计</text>
+        <p class="money">{{ moneyTotal }}</p>
       </uni-col>
       <!-- <uni-col :span="8">
         <text class="text">详情</text>
@@ -106,17 +106,23 @@
     </scroll-view>
   </view>
 
-  <ExpensesPopup title="编辑" ref="expensesPopupRef" v-model="expensesParams" @submit="onSubmit" />
+  <CommonPopup
+    title="编辑"
+    ref="commonPopupRef"
+    v-model="expensesParams"
+    :ledgerData="ledgerOptions"
+    @submit="onSubmit"
+  />
 </template>
 
 <script lang="ts" setup>
-import { commonList } from '@/api/common'
-import { earnCheckDatePrice } from '@/api/earn'
 import {
-  expensesDetailCheckDatePrice,
-  expensesDetailDelete,
-  expensesDetailEdit
-} from '@/api/expensesDetail'
+  ledgerCheckDatePrice,
+  ledgerDelete,
+  ledgerEdit,
+  ledgerList,
+  ledgerNameCheckType
+} from '@/api/ledger'
 import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
 import { onMounted, reactive, ref } from 'vue'
@@ -152,22 +158,22 @@ const params = ref({
   total: 0 // 传了后台也不接受，只用作显示消费笔数
 })
 const status = ref('more') // more/loading/noMore
-const earnTotal = ref(0)
 const moneyTotal = ref(0)
-const expensesPopupRef = ref()
+const commonPopupRef = ref()
 const expensesParams = ref<any>({})
 const swipeActionRef = ref<any[]>([] as any[])
 const editingMeta = ref<{ groupIndex: number; itemIndex: number } | null>(null)
 const triggered = ref(false) // 是否在刷新中
+const ledgerOptions = ref<any[]>([] as any[])
 
 const init = async () => {
-  await Promise.all([initList(), initTotal(), initEarnTotal()])
+  await Promise.all([initList(), initTotal()])
 }
 
 // 初始化数据
 const initList = async () => {
   status.value = 'loading'
-  const { list, total }: any = await commonList(params.value)
+  const { list, total }: any = await ledgerList(params.value)
   params.value.total = total
 
   // 重新设计list，需要把每一天的支出都展示出来，转成[{list:{}, date:2025-01-01, total:0}]
@@ -199,23 +205,12 @@ const initList = async () => {
 // 支出总金额
 const initTotal = async () => {
   const { startDate, endDate } = params.value
-  const { total }: any = await expensesDetailCheckDatePrice({
+  const { total }: any = await ledgerCheckDatePrice({
     startDate,
     endDate,
     userId: userInfo.userId
   })
   moneyTotal.value = total || 0
-}
-
-const initEarnTotal = async () => {
-  const { startDate, endDate } = params.value
-
-  const { total }: any = await earnCheckDatePrice({
-    startDate,
-    endDate
-  })
-
-  earnTotal.value = total
 }
 
 const handleChange = (e: any) => {
@@ -231,13 +226,17 @@ const handleChange = (e: any) => {
 const handleClick = async (e: any, row: any, i: number) => {
   if (e.content.text === '修改') {
     expensesParams.value = _utils.toCamelCase(row)
+    const { list } = await ledgerNameCheckType({ type: row.type })
+    ledgerOptions.value = list.map((item: any) => item.name)
+
+    console.log(ledgerOptions.value)
 
     // 使用 setTimeout 延迟打开弹窗，避免事件冒泡导致立即关闭
     setTimeout(() => {
-      expensesPopupRef.value.open()
+      commonPopupRef.value.open()
     }, 100)
   } else {
-    await expensesDetailDelete(row.id)
+    await ledgerDelete(row.id)
     tableData.value.splice(i, 1)
     uni.showToast({ title: '删除成功', icon: 'success' })
   }
@@ -288,7 +287,7 @@ const onSubmit = async (values: any) => {
   console.log(`编辑消费`, mergedRow)
 
   try {
-    await expensesDetailEdit(mergedRow)
+    await ledgerEdit(mergedRow)
     syncEditedRow(_utils.toSnakeCase(mergedRow))
     uni.showToast({ title: `编辑成功`, icon: 'success' })
     const refs: any = swipeActionRef.value
@@ -301,7 +300,7 @@ const onSubmit = async (values: any) => {
   } catch {
     console.error(`报错`)
   } finally {
-    expensesPopupRef.value.close()
+    commonPopupRef.value.close()
   }
 }
 
