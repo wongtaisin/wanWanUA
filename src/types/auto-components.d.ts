@@ -19,7 +19,6 @@ declare module 'vue' {
     CommonPopup: typeof import('./../components/common/popup.vue')['default']
     CommonProgress: typeof import('./../components/common/progress.vue')['default']
     CommonUniForm: typeof import('./../components/common/uniForm.vue')['default']
-    ExpensesPopup: typeof import('./../components/expensesPopup.vue')['default']
     MothPicker: typeof import('./../components/mothPicker.vue')['default']
     UniForm: typeof import('./../components/uniForm.tsx')['default']
   }
@@ -34,7 +33,6 @@ declare global {
   const CommonPopup: typeof import('./../components/common/popup.vue')['default']
   const CommonProgress: typeof import('./../components/common/progress.vue')['default']
   const CommonUniForm: typeof import('./../components/common/uniForm.vue')['default']
-  const ExpensesPopup: typeof import('./../components/expensesPopup.vue')['default']
   const MothPicker: typeof import('./../components/mothPicker.vue')['default']
   const UniForm: typeof import('./../components/uniForm.tsx')['default']
 }

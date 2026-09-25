@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-06 14:35:26
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 04:34:11
+ * @LastEditTime: 2026-09-25 14:00:47
  * @FilePath: \wanWanUA\src\pages\chart\spend.vue
  * @Description:
  *
@@ -17,7 +17,7 @@
             <uni-list-item :title="item.shop_name || item.remark" :note="item.create_date">
               <template v-slot:footer>
                 <view class="chat-custom-right">
-                  <text v-if="item.type === '1'" style="color: #dd524d">-{{ item.money }}</text>
+                  <text v-if="item.type === '1'">-{{ item.money }}</text>
                   <text v-else style="color: #67c23a">+{{ item.money }}</text>
                 </view>
               </template>

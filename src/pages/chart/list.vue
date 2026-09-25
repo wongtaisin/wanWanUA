@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 04:47:05
+ * @LastEditTime: 2026-09-25 14:17:57
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
@@ -85,7 +85,11 @@ const classify: any = {
   红包: { label: '红包', icon: 'icon-hongbao2' },
   vip: { label: 'vip', icon: 'icon-vip1' },
   其它: { label: '其它', icon: 'icon-qitafeiyong' },
-  新澳: { label: '新澳', icon: '' }
+  新澳: { label: '新澳', icon: '' },
+  工资: { label: '工资', icon: '' },
+  兼职: { label: '兼职', icon: '' },
+  借钱: { label: '借钱', icon: '' },
+  还钱: { label: '还钱', icon: '' }
 }
 
 const handleOpens = (item: string) => {

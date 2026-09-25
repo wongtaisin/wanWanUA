@@ -92,7 +92,7 @@
               </template>
               <template v-slot:footer>
                 <view class="chat-custom-right">
-                  <text v-if="item.type === '1'" style="color: #dd524d">-{{ item.money }}</text>
+                  <text v-if="item.type === '1'">-{{ item.money }}</text>
                   <text v-else style="color: #67c23a">+{{ item.money }}</text>
                 </view>
               </template>
