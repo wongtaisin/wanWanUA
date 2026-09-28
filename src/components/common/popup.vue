@@ -51,7 +51,12 @@
         </uni-forms-item>
 
         <uni-forms-item label="备注" name="remark">
-          <uni-easyinput type="textarea" v-model="params.remark" placeholder="请输入备注" />
+          <uni-easyinput
+            type="textarea"
+            v-model="params.remark"
+            placeholder="请输入备注"
+            :maxlength="9999"
+          />
         </uni-forms-item>
 
         <uni-forms-item label="创建时间" name="createDate" required>
