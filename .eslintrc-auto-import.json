@@ -32,6 +32,7 @@
     "getCurrentScope": true,
     "getCurrentWatcher": true,
     "getURL": true,
+    "getURLS": true,
     "h": true,
     "inject": true,
     "isProxy": true,
