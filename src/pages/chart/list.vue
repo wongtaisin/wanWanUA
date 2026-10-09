@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import type { FormData } from '@/pages/chart/types'
-import { computed, ref, watch } from 'vue'
+import { computed, defineEmits, defineModel, ref, watch } from 'vue'
 
 const data = defineModel<any>('data', { default: {} })
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
@@ -85,11 +85,11 @@ const classify: any = {
   红包: { label: '红包', icon: 'icon-hongbao2' },
   vip: { label: 'vip', icon: 'icon-vip1' },
   其它: { label: '其它', icon: 'icon-qitafeiyong' },
-  新澳: { label: '新澳', icon: '' },
-  工资: { label: '工资', icon: '' },
-  兼职: { label: '兼职', icon: '' },
-  借钱: { label: '借钱', icon: '' },
-  还钱: { label: '还钱', icon: '' }
+  新澳: { label: '新澳', icon: 'icon-liuhecai' },
+  工资: { label: '工资', icon: 'icon-gongzi' },
+  兼职: { label: '兼职', icon: 'icon-fuyejianzhi' },
+  借钱: { label: '借钱', icon: 'icon-jieqian' },
+  还钱: { label: '还钱', icon: 'icon-huanqian' }
 }
 
 const handleOpens = (item: string) => {
