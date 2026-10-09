@@ -5,25 +5,25 @@
       <CommonForms
         ref="commonFormRef"
         label-align="right"
-        label-width="22%"
+        label-width="150rpx"
         :rules="rules"
         :columns="formColumns"
         v-model="params"
         @submit="onSubmit"
       >
         <!-- 暂时使用 -->
-        <uni-forms-item label="支出类型" name="ledgerName" required>
+        <uni-forms-item label="类型" name="ledgerName" required>
           <uni-data-select
-            placeholder="请选择支出类型"
+            placeholder="请选择类型"
             v-model="params.ledgerName"
             :localdata="ledgerTypes"
             @change="(val: string) => handleChange(ledgerTypes, val, 'ledgerText')"
           />
         </uni-forms-item>
 
-        <uni-forms-item label="支付类型" name="paymentId" required>
+        <uni-forms-item label="类型" name="paymentId" required>
           <uni-data-select
-            placeholder="请选择支付类型"
+            placeholder="请选择类型"
             v-model="params.paymentId"
             :localdata="paymentRange"
             @change="(val: number) => handleChange(paymentRange, val, 'paymentName')"
@@ -77,7 +77,15 @@
 import { paymentAll } from '@/api/payment'
 import { useShop } from '@/store/common'
 import { onShow } from '@dcloudio/uni-app'
-import { computed, ref } from 'vue'
+import {
+  computed,
+  defineEmits,
+  defineExpose,
+  defineModel,
+  defineProps,
+  ref,
+  withDefaults
+} from 'vue'
 
 interface Props {
   title?: string
