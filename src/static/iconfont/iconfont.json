@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4113281",
+      "name": "工资",
+      "font_class": "gongzi",
+      "unicode": "e6d7",
+      "unicode_decimal": 59095
+    },
+    {
+      "icon_id": "48166144",
+      "name": "副业兼职",
+      "font_class": "fuyejianzhi",
+      "unicode": "e74a",
+      "unicode_decimal": 59210
+    },
+    {
+      "icon_id": "16666832",
+      "name": "借钱选中",
+      "font_class": "jieqian",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "3154425",
+      "name": "还钱",
+      "font_class": "huanqian",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "11549601",
+      "name": "六合彩",
+      "font_class": "liuhecai",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "43909770",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
       "icon_id": "8666822",
       "name": "店铺",
       "font_class": "dianpu1",
