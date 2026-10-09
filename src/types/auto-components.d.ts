@@ -20,6 +20,8 @@ declare module 'vue' {
     CommonProgress: typeof import('./../components/common/progress.vue')['default']
     CommonUniForm: typeof import('./../components/common/uniForm.vue')['default']
     MothPicker: typeof import('./../components/mothPicker.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
     UniForm: typeof import('./../components/uniForm.tsx')['default']
   }
 }
@@ -34,5 +36,7 @@ declare global {
   const CommonProgress: typeof import('./../components/common/progress.vue')['default']
   const CommonUniForm: typeof import('./../components/common/uniForm.vue')['default']
   const MothPicker: typeof import('./../components/mothPicker.vue')['default']
+  const RouterLink: typeof import('vue-router')['RouterLink']
+  const RouterView: typeof import('vue-router')['RouterView']
   const UniForm: typeof import('./../components/uniForm.tsx')['default']
 }
