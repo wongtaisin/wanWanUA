@@ -17,7 +17,10 @@ import Pinia from './store/index'
 import install from './utils/index'
 
 // 导入样式文件
-import './static/iconfont/iconfont.css'
+// import './static/iconfont/iconfont.css'
+// #ifdef APP-PLUS
+import './static/iconfont/iconfont-color.css'
+// #endif
 // #ifdef H5
 import './static/iconfont/iconfont.js'
 // #endif
