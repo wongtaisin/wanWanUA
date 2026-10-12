@@ -251,22 +251,22 @@ defineExpose({
   margin-bottom: 30rpx;
 }
 
-.remark-editor {
-  width: 100%;
-  height: 220rpx !important;
-  padding: 20rpx;
-  border: 1px solid #dcdfe6;
-  border-radius: 8rpx;
-  box-sizing: border-box;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
+// .remark-editor {
+//   width: 100%;
+//   height: 220rpx !important;
+//   padding: 20rpx;
+//   border: 1px solid #dcdfe6;
+//   border-radius: 8rpx;
+//   box-sizing: border-box;
+//   overflow-y: auto;
+//   white-space: pre-wrap;
+//   word-break: break-word;
+// }
 
-.ql-container,
-.ql-editor {
-  min-height: 220rpx !important;
-  white-space: pre-wrap !important;
-  word-break: break-word;
-}
+// .ql-container,
+// .ql-editor {
+//   min-height: 220rpx !important;
+//   white-space: pre-wrap !important;
+//   word-break: break-word;
+// }
 </style>
