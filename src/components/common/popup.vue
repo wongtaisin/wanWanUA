@@ -51,13 +51,14 @@
         </uni-forms-item>
 
         <uni-forms-item label="备注" name="remark">
-          <editor
+          <uni-easyinput type="textarea" v-model="params.remark" :maxlength="9999" />
+          <!-- <editor
             id="remark-editor"
             class="remark-editor"
             placeholder="请输入备注"
             @ready="onEditorReady"
             @input="handleRemarkInput"
-          />
+          /> -->
         </uni-forms-item>
 
         <uni-forms-item label="创建时间" name="createDate" required>
@@ -136,26 +137,26 @@ const syncEditorContent = () => {
   editorContext.value?.setContents({ html: params.value.remark ?? '' })
 }
 
-const onEditorReady = () => {
-  const query = uni.createSelectorQuery().in(componentInstance?.proxy)
-  query
-    .select('#remark-editor')
-    .context(result => {
-      const editor = Array.isArray(result) ? result[0] : result
-      if (!editor?.context) {
-        console.error('获取备注编辑器上下文失败')
-        return
-      }
+// const onEditorReady = () => {
+//   const query = uni.createSelectorQuery().in(componentInstance?.proxy)
+//   query
+//     .select('#remark-editor')
+//     .context(result => {
+//       const editor = Array.isArray(result) ? result[0] : result
+//       if (!editor?.context) {
+//         console.error('获取备注编辑器上下文失败')
+//         return
+//       }
 
-      editorContext.value = editor.context as UniApp.EditorContext
-      syncEditorContent()
-    })
-    .exec()
-}
+//       editorContext.value = editor.context as UniApp.EditorContext
+//       syncEditorContent()
+//     })
+//     .exec()
+// }
 
-const handleRemarkInput = (event: { detail?: { html?: string } }) => {
-  params.value.remark = event.detail?.html ?? ''
-}
+// const handleRemarkInput = (event: { detail?: { html?: string } }) => {
+//   params.value.remark = event.detail?.html ?? ''
+// }
 
 /**
  * @description 下拉选择
