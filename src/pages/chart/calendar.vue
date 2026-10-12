@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-15 11:29:03
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-18 18:57:05
+ * @LastEditTime: 2026-10-13 01:36:55
  * @FilePath: \wanWanUA\src\pages\chart\calendar.vue
  * @Description:
  *
@@ -78,7 +78,7 @@ const init = async () => {
   const res = props.data
   info.value.selected = Object.entries(res.dayMap ?? {}).map(([key, value]: [string, any]) => ({
     date: key,
-    info: `￥${value.total}`,
+    info: `${value.total}`,
     data: {
       custom: String(value.total),
       name: key

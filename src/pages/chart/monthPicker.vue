@@ -19,7 +19,13 @@
         @click="m.value !== 0 && handleMonth(m.label)"
       >
         {{ m.label }}
-        <view class="month-text" v-if="m.value !== 0">￥{{ m.value }}</view>
+        <view
+          class="month-text"
+          :class="{ negative: /-/.test(String(m.value)) }"
+          v-if="m.value !== 0"
+        >
+          {{ m.value }}
+        </view>
       </view>
     </view>
   </view>
@@ -186,6 +192,10 @@ watch(
     font-size: 24rpx;
     color: #e43d33;
     margin-top: 10rpx;
+  }
+
+  .month-text.negative {
+    color: #67c23a;
   }
 }
 </style>
