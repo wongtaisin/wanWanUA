@@ -5,7 +5,7 @@
       <CommonForms
         ref="commonFormRef"
         label-align="right"
-        label-width="150rpx"
+        label-width="160rpx"
         :rules="rules"
         :columns="formColumns"
         v-model="params"
@@ -51,11 +51,12 @@
         </uni-forms-item>
 
         <uni-forms-item label="备注" name="remark">
-          <uni-easyinput
-            type="textarea"
-            v-model="params.remark"
+          <editor
+            id="remark-editor"
+            class="remark-editor"
             placeholder="请输入备注"
-            :maxlength="9999"
+            @ready="onEditorReady"
+            @input="handleRemarkInput"
           />
         </uni-forms-item>
 
@@ -77,15 +78,7 @@
 import { paymentAll } from '@/api/payment'
 import { useShop } from '@/store/common'
 import { onShow } from '@dcloudio/uni-app'
-import {
-  computed,
-  defineEmits,
-  defineExpose,
-  defineModel,
-  defineProps,
-  ref,
-  withDefaults
-} from 'vue'
+import { computed, getCurrentInstance, nextTick, ref } from 'vue'
 
 interface Props {
   title?: string
@@ -111,6 +104,8 @@ const userShop = useShop()
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const popupRef = ref()
+const editorContext = ref<UniApp.EditorContext>()
+const componentInstance = getCurrentInstance()
 const fileList = computed(() =>
   params.value.image
     ? [
@@ -135,6 +130,31 @@ const handleUploadSuccess = (file: any) => {
 
 const onSubmit = async (values: any) => {
   emits('submit', values)
+}
+
+const syncEditorContent = () => {
+  editorContext.value?.setContents({ html: params.value.remark ?? '' })
+}
+
+const onEditorReady = () => {
+  const query = uni.createSelectorQuery().in(componentInstance?.proxy)
+  query
+    .select('#remark-editor')
+    .context(result => {
+      const editor = Array.isArray(result) ? result[0] : result
+      if (!editor?.context) {
+        console.error('获取备注编辑器上下文失败')
+        return
+      }
+
+      editorContext.value = editor.context as UniApp.EditorContext
+      syncEditorContent()
+    })
+    .exec()
+}
+
+const handleRemarkInput = (event: { detail?: { html?: string } }) => {
+  params.value.remark = event.detail?.html ?? ''
 }
 
 /**
@@ -216,6 +236,7 @@ defineExpose({
   open: () => {
     popupRef.value.open()
     userShop.setUseShop(undefined)
+    nextTick(syncEditorContent)
   },
   close: () => popupRef.value.close()
 })
@@ -227,5 +248,24 @@ defineExpose({
   font-weight: bold;
   text-align: center;
   margin-bottom: 30rpx;
+}
+
+.remark-editor {
+  width: 100%;
+  height: 220rpx !important;
+  padding: 20rpx;
+  border: 1px solid #dcdfe6;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ql-container,
+.ql-editor {
+  min-height: 220rpx !important;
+  white-space: pre-wrap !important;
+  word-break: break-word;
 }
 </style>

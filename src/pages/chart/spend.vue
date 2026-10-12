@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-06 14:35:26
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 14:00:47
+ * @LastEditTime: 2026-10-13 01:26:11
  * @FilePath: \wanWanUA\src\pages\chart\spend.vue
  * @Description:
  *
@@ -10,19 +10,12 @@
 -->
 <template>
   <uni-popup ref="popupRef" :safe-area="true" type="right" background-color="#fff">
-    <scroll-view scroll-y style="height: calc(100vh - 78rpx)" @scrolltolower="loadMore">
+    <scroll-view scroll-y style="height: calc(100vh - 1rpx)" @scrolltolower="loadMore">
       <view class="popup-content">
         <uni-list v-for="item in tableData" :key="item.date">
-          <uni-tooltip :content="item.remark" placement="bottom">
-            <uni-list-item :title="item.shop_name || item.remark" :note="item.create_date">
-              <template v-slot:footer>
-                <view class="chat-custom-right">
-                  <text v-if="item.type === '1'">-{{ item.money }}</text>
-                  <text v-else style="color: #67c23a">+{{ item.money }}</text>
-                </view>
-              </template>
-            </uni-list-item>
-          </uni-tooltip>
+          <!-- <uni-tooltip :content="item.remark" placement="bottom"> -->
+          <CommonList :item="item" />
+          <!-- </uni-tooltip> -->
         </uni-list>
 
         <!-- 加载提示 -->
@@ -34,7 +27,7 @@
 
 <script lang="ts" setup>
 import { ledgerList } from '@/api/ledger'
-import { ref } from 'vue'
+import { defineExpose, ref } from 'vue'
 
 interface FormData {
   ledgerName: string[]
@@ -82,12 +75,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.chat-custom-right {
-  display: flex;
-  align-items: center;
-  height: 68rpx;
-}
-
 .popup-content {
   max-width: 600rpx;
   min-width: 375rpx;

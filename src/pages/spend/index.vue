@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 04:59:48
+ * @LastEditTime: 2026-10-13 01:00:13
  * @FilePath: \wanWanUA\src\pages\spend\index.vue
  * @Description:
  *
@@ -66,37 +66,7 @@
             @click="handleClick($event, item, i)"
             @change="swipeChange($event, item, i)"
           >
-            <uni-list-item :title="item.shop_name || item.remark" :note="item.create_date">
-              <template v-slot:header v-if="item.image">
-                <!-- 图片 本地地址需要读取，不然值得获取 /api -->
-
-                <image
-                  lazy-load
-                  mode="heightFix"
-                  :src="`${BASE_URL}${item.image}`"
-                  @click="previewSingleImage(`${BASE_URL}${item.image}`)"
-                  style="height: 86rpx; margin-right: 20rpx"
-                />
-              </template>
-              <template v-slot:body v-else>
-                <view class="body-content">
-                  <view>
-                    <!-- <svg class="slot-icon">
-                      <use xlink:href="#icon-dianpu1" />
-                    </svg> -->
-                    {{ item.shop_name }}
-                  </view>
-                  <view> {{ item.remark }} </view>
-                  <view> {{ item.create_date }} </view>
-                </view>
-              </template>
-              <template v-slot:footer>
-                <view class="chat-custom-right">
-                  <text v-if="item.type === '1'">-{{ item.money }}</text>
-                  <text v-else style="color: #67c23a">+{{ item.money }}</text>
-                </view>
-              </template>
-            </uni-list-item>
+            <CommonList :item="item" />
           </uni-swipe-action-item>
         </uni-swipe-action>
       </uni-list>
@@ -422,15 +392,15 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .spend-page {
-  height: calc(100vh - 108px);
+  height: calc(100vh - 216rpx);
 
   .list-scroll {
     /* #ifdef H5 */
-    height: calc(100vh - 190px);
+    height: calc(100vh - 360rpx);
     /* #endif */
 
     /* #ifdef APP */
-    height: 100%;
+    height: calc(100vh - 156rpx);
     /* #endif */
   }
 
@@ -459,41 +429,6 @@ onMounted(() => {
     padding: 0 30rpx;
     line-height: 68rpx;
     color: #a0a0a0;
-  }
-
-  .body-content {
-    width: 650rpx;
-
-    .slot-icon {
-      width: 14px;
-      height: 14px;
-      margin-right: 5rpx;
-    }
-    view {
-      &:first-child {
-        font-size: 14px;
-        color: #3b4144;
-        margin-bottom: 10rpx;
-      }
-      &:nth-child(2) {
-        font-size: 28rpx;
-        margin-bottom: 10rpx;
-      }
-      &:last-child {
-        font-size: 12px;
-        color: #999999;
-      }
-    }
-  }
-
-  .chat-custom-right {
-    display: flex;
-    align-items: center;
-
-    text {
-      width: 100rpx;
-      text-align: right;
-    }
   }
 }
 
