@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 14:17:57
+ * @LastEditTime: 2026-10-14 00:00:12
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
@@ -10,50 +10,35 @@
 -->
 <template>
   <uni-section title="类型" type="line">
-    <template v-slot:right>合计：{{ totals }}</template>
+    <template v-slot:right
+      >合计：{{ ledger.incomeTotal }} - {{ ledger.expenseTotal }} = {{ ledger.total }}</template
+    >
   </uni-section>
 
-  <uni-list v-for="[item, value] in Object.entries(tableData)">
+  <uni-list>
     <uni-list-item
-      :title="classify[item].label"
-      :note="`${value} 元 / ${totals} 元 = ${Number(
-        ((Number(value) / Number(totals)) * 100).toFixed(2).replace(/\.?0+$/, '')
-      )}%`"
+      v-for="[item, value] in sortedTableData"
+      :key="item"
+      :title="classify[item]?.label ?? item"
+      :note="`收入：${value.income}；支出：${value.expense}`"
       link
       @click="handleOpens(item)"
     >
       <template v-slot:header>
         /* #ifdef H5 */
-        <svg class="slot-icon">
+        <svg v-if="classify[item]?.icon" class="slot-icon">
           <use :xlink:href="`#${classify[item].icon}`" />
         </svg>
         /* #endif */
         <text />
         /* #ifdef APP */
-        <text :class="'iconfont ' + classify[item].icon" />
+        <text v-if="classify[item]?.icon" :class="'iconfont ' + classify[item].icon" />
         /* #endif */
       </template>
-      <!-- <template v-slot:body>
-          <view class="slot-box">
-            <view class="slot-text">
-              <view>
-                {{ classify[item].label }}
-                {{ Number(((tableData[item] / totals) * 100).toFixed(2)) }}%
-              </view>
-              <view>
-                {{ tableData[item] }}
-              </view>
-            </view>
-            <CommonProgress
-              style="margin-top: 20rpx"
-              :percent="Number(((tableData[item] / totals) * 100).toFixed(2))"
-              :height="12"
-              active
-            />
-          </view>
-        </template> -->
       <template v-slot:footer>
-        <text class="slot-text">{{ tableData[item] }}</text>
+        <text class="slot-text" :class="{ positive: !/-/.test(String(value.total)) }">
+          {{ value.total }}
+        </text>
       </template>
     </uni-list-item>
   </uni-list>
@@ -67,8 +52,29 @@ const data = defineModel<any>('data', { default: {} })
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const tableData = ref<any>({})
-const totals = ref(0)
+const ledger = ref<any>({})
 const emits = defineEmits(['update:modelValue', 'change'])
+
+const isExpense = (value: unknown) => /-/.test(String(value))
+
+const sortedTableData = computed(() => {
+  const entries = Object.entries(
+    tableData.value as Record<string, { total?: number; income?: number; expense?: number }>
+  )
+  const sortByTotal = (expense: boolean) =>
+    entries
+      .filter(([, value]) => isExpense(value.total) === expense)
+      .sort(([, valueA], [, valueB]) => {
+        const totalA = Number(valueA.total)
+        const totalB = Number(valueB.total)
+        return (
+          (Number.isFinite(totalB) ? Math.abs(totalB) : 0) -
+          (Number.isFinite(totalA) ? Math.abs(totalA) : 0)
+        )
+      })
+
+  return [...sortByTotal(true), ...sortByTotal(false)]
+})
 
 const classify: any = {
   吃: { label: '吃', icon: 'icon-food-mifan' },
@@ -76,7 +82,7 @@ const classify: any = {
   玩: { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
   乐: { label: '乐', icon: 'icon-zhoubianyule' },
   过路费: { label: '过路费', icon: 'icon-guolufei' },
-  油费: { label: '车油', icon: 'icon-jiayouzhan2' },
+  车油: { label: '车油', icon: 'icon-jiayouzhan2' },
   停车费: { label: '停车费', icon: 'icon-tingchefeiyong' },
   交通费: { label: '交通费', icon: 'icon-gongjiaoche' },
   超市: { label: '超市', icon: 'icon-chaoshi2' },
@@ -98,9 +104,13 @@ const handleOpens = (item: string) => {
 }
 
 const init = async () => {
-  const { sum, total } = data.value
+  const { sum, total, expenseTotal, incomeTotal } = data.value
   tableData.value = { ...sum }
-  totals.value = total
+  ledger.value = {
+    expenseTotal,
+    incomeTotal,
+    total
+  }
 }
 
 watch(
@@ -135,6 +145,10 @@ watch(
   align-items: center;
   justify-content: space-between;
   color: #333;
+}
+
+.slot-text.positive {
+  color: #e43d33;
 }
 
 :deep(.uni-list--border-bottom) {
