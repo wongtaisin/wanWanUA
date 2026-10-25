@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-10-25 22:22:13
+ * @LastEditTime: 2026-10-26 00:21:08
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
@@ -48,7 +48,13 @@
 import type { FormData } from '@/pages/chart/types'
 import { computed, defineEmits, defineModel, ref, watch } from 'vue'
 
+interface LedgerType {
+  name: string
+  icon?: string
+}
+
 const data = defineModel<any>('data', { default: {} })
+const list = defineModel<LedgerType[]>('list', { default: () => [] })
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const tableData = ref<any>({})
@@ -76,27 +82,13 @@ const sortedTableData = computed(() => {
   return [...sortByTotal(true), ...sortByTotal(false)]
 })
 
-const classify: any = {
-  吃: { label: '吃', icon: 'icon-food-mifan' },
-  喝: { label: '喝', icon: 'icon-kekoukele2' },
-  玩: { label: '玩', icon: 'icon-a-GamePadyouxishoubing' },
-  乐: { label: '乐', icon: 'icon-zhoubianyule' },
-  过路费: { label: '过路费', icon: 'icon-guolufei' },
-  车油: { label: '车油', icon: 'icon-jiayouzhan2' },
-  停车费: { label: '停车费', icon: 'icon-tingchefeiyong' },
-  交通费: { label: '交通费', icon: 'icon-gongjiaoche' },
-  超市: { label: '超市', icon: 'icon-chaoshi2' },
-  网购: { label: '网购', icon: 'icon-wanggou' },
-  话费: { label: '话费', icon: 'icon-dianhua' },
-  红包: { label: '红包', icon: 'icon-hongbao2' },
-  vip: { label: 'vip', icon: 'icon-vip1' },
-  其它: { label: '其它', icon: 'icon-qitafeiyong' },
-  六合彩: { label: '六合彩', icon: 'icon-liuhecai' },
-  工资: { label: '工资', icon: 'icon-gongzi' },
-  兼职: { label: '兼职', icon: 'icon-fuyejianzhi' },
-  借钱: { label: '借钱', icon: 'icon-jieqian' },
-  还钱: { label: '还钱', icon: 'icon-huanqian' }
-}
+/**
+ * @abstract 类型分类
+ * @returns 吃: { label: '吃', icon: 'icon-food-mifan' },
+ * */
+const classify = computed<Record<string, { label: string; icon?: string }>>(() =>
+  Object.fromEntries(list.value.map(({ name, icon }) => [name, { label: name, icon }]))
+)
 
 const handleOpens = (item: string) => {
   emits('update:modelValue', { ...params.value, ledgerName: [item] })

@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-09-25 04:42:10
+ * @LastEditTime: 2026-10-26 00:20:32
  * @FilePath: \wanWanUA\src\pages\chart\index.vue
  * @Description:
  *
@@ -89,6 +89,7 @@
     <List
       ref="listRef"
       :data="data"
+      :list="ledgerData"
       :model-value="params"
       @update:model-value="
         (val: { startDate: string; endDate: string; ledgerName: string[] }) => {
@@ -168,8 +169,10 @@ const init = async () => {
 }
 
 const ledgerOptions = ref<string[]>([])
+const ledgerData = ref<any[]>([])
 const initLedgerOptions = async () => {
   const { list } = await ledgerNameCheckType()
+  ledgerData.value = list
   ledgerOptions.value = list.map((item: any) => item.name)
 }
 
