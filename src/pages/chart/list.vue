@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2025-11-01 10:32:58
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-10-26 00:21:08
+ * @LastEditTime: 2026-10-26 00:39:01
  * @FilePath: \wanWanUA\src\pages\chart\list.vue
  * @Description:
  *
@@ -53,8 +53,16 @@ interface LedgerType {
   icon?: string
 }
 
-const data = defineModel<any>('data', { default: {} })
-const list = defineModel<LedgerType[]>('list', { default: () => [] })
+interface Props {
+  data?: any
+  list?: LedgerType[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  data: {},
+  list: () => []
+})
+
 const modelValue = defineModel<FormData>('modelValue', { default: {} })
 const params = computed(() => modelValue.value)
 const tableData = ref<any>({})
@@ -87,7 +95,7 @@ const sortedTableData = computed(() => {
  * @returns 吃: { label: '吃', icon: 'icon-food-mifan' },
  * */
 const classify = computed<Record<string, { label: string; icon?: string }>>(() =>
-  Object.fromEntries(list.value.map(({ name, icon }) => [name, { label: name, icon }]))
+  Object.fromEntries(props.list.map(({ name, icon }) => [name, { label: name, icon }]))
 )
 
 const handleOpens = (item: string) => {
@@ -96,7 +104,7 @@ const handleOpens = (item: string) => {
 }
 
 const init = async () => {
-  const { sum, total, expenseTotal, incomeTotal } = data.value
+  const { sum, total, expenseTotal, incomeTotal } = props.data
   tableData.value = { ...sum }
   ledger.value = {
     expenseTotal,
@@ -107,7 +115,7 @@ const init = async () => {
 
 watch(
   () => {
-    data.value
+    props.data
   },
   () => {
     init()
