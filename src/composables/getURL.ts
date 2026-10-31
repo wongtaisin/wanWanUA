@@ -2,7 +2,7 @@
  * @Author: wingddd wongtaisin1024@gmail.com
  * @Date: 2026-03-12 14:48:22
  * @LastEditors: wingddd wongtaisin1024@gmail.com
- * @LastEditTime: 2026-10-02 03:26:10
+ * @LastEditTime: 2026-11-01 00:37:12
  * @FilePath: \wanWanUA\src\composables\getURL.ts
  * @Description:
  *
@@ -10,10 +10,11 @@
  */
 
 export const getURL = () => {
-  const BASE_URL =
+  const BASE_URL = (
     import.meta.env.MODE === 'development'
-      ? 'http://127.0.0.1:3001' // 调试 app 需要固定的ip地址
-      : 'http://192.168.0.106:3001'
+      ? import.meta.env.VITE_DEV_BASE_URL
+      : import.meta.env.VITE_PROD_BASE_URL
+  ).replace(/\/+$/, '')
 
   return { BASE_URL }
 
@@ -26,8 +27,8 @@ export const getURL = () => {
 export const getURLS = () => {
   const BASE_URLS =
     import.meta.env.MODE === 'development'
-      ? ['http://127.0.0.1:3001'] // 调试 app 需要固定的ip地址
-      : ['http://192.168.0.109:3001', 'http://192.168.0.106:3001']
+      ? [import.meta.env.VITE_DEV_BASE_URL]
+      : [import.meta.env.VITE_PROD_BASE_URL, import.meta.env.VITE_DEV_BASE_URL]
 
   return { BASE_URL: BASE_URLS[0], BASE_URLS }
 }
