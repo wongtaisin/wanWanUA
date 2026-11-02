@@ -97,8 +97,6 @@ import { useInfoStore } from '@/store/user'
 import _utils from '@/utils/utils'
 import { onMounted, reactive, ref } from 'vue'
 
-const { BASE_URL } = getURL()
-
 const userInfo = useInfoStore().user
 
 type SpendGroup = { date: string; list: any[]; total: number }

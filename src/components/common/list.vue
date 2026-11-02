@@ -10,20 +10,23 @@
 -->
 <template>
   <uni-list-item>
-    <template v-slot:header v-if="item.image">
-      <!-- todo 图片 本地地址需要读取，不然值得获取 /api -->
-      <image
-        lazy-load
-        mode="heightFix"
-        :src="`${BASE_URL}${item.image}`"
-        @click="previewSingleImage(`${BASE_URL}${item.image}`)"
-        style="height: 86rpx; margin-right: 20rpx"
-      />
+    <template v-slot:header>
+      <!-- todo 适合做头像使用 -->
     </template>
-    <template v-slot:body v-else>
+    <template v-slot:body>
       <view class="list-body">
         <view class="shop-name">{{ item.shop_name }} </view>
         <rich-text class="remark-text" :nodes="item.remark" />
+        <view class="image-list">
+          <image
+            v-if="item.image"
+            lazy-load
+            mode="heightFix"
+            :src="`${BASE_URL}${item.image}`"
+            @click="previewSingleImage(`${BASE_URL}${item.image}`)"
+            style="height: 260rpx; margin-right: 20rpx"
+          />
+        </view>
         <view class="create-date"> {{ item.create_date }} </view>
       </view>
     </template>
@@ -74,8 +77,15 @@ const previewSingleImage = (image: string) => {
     word-break: break-word;
   }
 
+  .image-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10rpx;
+  }
+
   .create-date {
     font-size: 24rpx;
+    line-height: 1;
     color: #999999;
     margin-top: 10rpx;
   }
